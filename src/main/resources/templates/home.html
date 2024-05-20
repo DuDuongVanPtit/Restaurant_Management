@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Home</title>
+        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+        <link href="css/styles.css" rel="stylesheet" />
+        <link href="css/myStyles.css" rel="stylesheet" />
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    </head>
+    <body class="sb-nav-fixed">
+        <div th:replace="fragments/header :: html"></div>
+        <div id="layoutSidenav">
+            <div id="layoutSidenav_content" style="padding: 0">
+                <!-- Sidebar Toggle-->
+                <main>
+                    <div class="top-nav-container">
+                        <ul class="top-nav">
+                            <li class="top-nav-item">Reservation</li>
+                            <li class="top-nav-item">Order</li>
+                            <li class="top-nav-item">Introduction</li>
+                            <li class="top-nav-item">About</li>
+                            <li class="top-nav-item">Policy</li>
+                        </ul>
+                    </div>
+
+                    <div class="slideshow-container">
+                        <div class="mySlides" style="background-image: url('/images/slides/slide1.jpg');"></div>
+                        <div class="mySlides" style="background-image: url('/images/slides/slide2.jpg');"></div>
+                        <div class="mySlides" style="background-image: url('/images/slides/slide3.jpg');"></div>
+                        <div class="mySlides" style="background-image: url('/images/slides/slide4.jpg');"></div>
+                        <!-- Thêm các ảnh khác tại đây -->
+
+                        <a class="prev" onclick="plusSlides(-2)">&#10094;</a>
+                        <a class="next" onclick="plusSlides(0)">&#10095;</a>
+                    </div>
+                </main>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="js/scripts.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+        <script src="assets/demo/chart-area-demo.js"></script>
+        <script src="assets/demo/chart-bar-demo.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+        <script src="js/datatables-simple-demo.js"></script>
+        <script>
+            var slideIndex = 0;
+            var timeoutId;
+            showSlides();
+            function showSlides() {
+                var i;
+                var slides = document.getElementsByClassName("mySlides");
+                for (i = 0; i < slides.length; i++) {
+                    slides[i].style.display = "none";
+                }
+                slideIndex++;
+                if (slideIndex > slides.length) {slideIndex = 1}
+                else if (slideIndex <= 0) {slideIndex = slides.length}
+                slides[slideIndex-1].style.display = "block";
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(showSlides, 5000);
+            }
+            function plusSlides(n) {
+                slideIndex += n;
+                showSlides();
+            }
+        </script>
+    </body>
+</html>

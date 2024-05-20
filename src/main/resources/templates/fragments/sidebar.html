@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title></title>
+        <link href="/css/styles.css" rel="stylesheet" />
+        <link href="/css/myStyles.css" rel="stylesheet" />
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div th:if="${#authentication.principal != 'anonymousUser'}" id="layoutSidenav_nav">
+            <nav sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')" class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">Personal Management</div>
+                        <a sec:authorize="hasAnyRole('ROLE_ADMIN')"  class="nav-link collapsed" th:href="@{/user/manager-list}"  aria-expanded="false" aria-controls="collapsePages">
+                            <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
+                            Manager List
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <a class="nav-link collapsed" th:href="@{/user/staff-list}"  aria-expanded="false" aria-controls="collapsePages">
+                            <div class="sb-nav-link-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            Staff List
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                    </div>
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">Restaurant Management</div>
+                        <a class="nav-link collapsed" th:href="@{/user/staff-schedule}"  aria-expanded="false" aria-controls="collapsePages">
+                            <div class="sb-nav-link-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            Staff Schedule
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                        <a class="nav-link collapsed" th:href="@{/user/schedule}"  aria-expanded="false" aria-controls="collapsePages">
+                            <div class="sb-nav-link-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            Create Schedule
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                    </div>
+                </div>
+                <div th:if="${#authentication.principal != 'anonymousUser'}" class="sb-sidenav-footer">
+                    <div class="small">Logged in as:</div>
+                    <span sec:authentication="principal.role"></span>
+                </div>
+            </nav>
+
+            <nav sec:authorize="hasAnyRole('ROLE_STAFF')" class="sb-sidenav accordion sb-sidenav-dark">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+<!--                        <div class="sb-sidenav-menu-heading">Personal Management</div>-->
+                        <a th:href="@{/staff/schedule-registration}" class="nav-link collapsed">
+                            <div class="sb-nav-link-icon">
+                                <i class="fas fa-columns"></i>
+                            </div>
+                                Schedule Registration
+                            <div class="sb-sidenav-collapse-arrow">
+                                <i class="fas fa-angle-down"></i>
+                            </div>
+                        </a>
+                        <a class="nav-link collapsed" th:href="@{/user/staff-list}"  aria-expanded="false" aria-controls="collapsePages">
+                            <div class="sb-nav-link-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            Official Schedule
+                            <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                        </a>
+                    </div>
+                </div>
+                <div th:if="${#authentication.principal != 'anonymousUser'}" class="sb-sidenav-footer">
+                    <div class="small">Logged in as:</div>
+                    <span sec:authentication="principal.role"></span>
+                </div>
+            </nav>
+
+
+        </div>
+    </body>
+</html>

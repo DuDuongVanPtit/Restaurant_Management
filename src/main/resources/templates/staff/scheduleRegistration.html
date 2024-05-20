@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link href="/css/styles.css" rel="stylesheet" />
+    <link href="/css/myStyles.css" rel="stylesheet"/>
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body class="sb-nav-fixed">
+<div th:replace="fragments/header :: html"></div>
+<div id="layoutSidenav">
+    <div th:replace="fragments/sidebar :: html"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="registration-container">
+                <div class="registration-table-container">
+                    <h2 style="text-align: center; border-bottom: 2px solid #ddd; padding: 10px">Register your work schedule</h2>
+                    <div style=" overflow-x: auto;">
+                        <table style="border-collapse: collapse; width: 100%; margin: 40px 0; overflow: auto">
+                            <thead>
+                            <tr>
+                                <th style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: #fff">Monday</th>
+                                <th style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: #fff">Tuesday</th>
+                                <th style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: #fff">Wednesday</th>
+                                <th style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: #fff">Thursday</th>
+                                <th style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: #fff">Friday</th>
+                                <th style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: #fff">Saturday</th>
+                                <th style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: #fff">Shift</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td style="border: 1px solid #ddd; padding: 8px; text-align: center">
+                                    <label><input id="monday1" name="monday" value="morning" type="checkbox"></label>
+                                    <div></div>
+                                    <label><input id="monday2" name="monday" value="evening" type="checkbox"></label>
+                                </td>
+                                <td style="border: 1px solid #ddd; padding: 8px; text-align: center">
+                                    <label><input id="tuesday1" name="tuesday" value="morning" type="checkbox"></label>
+                                    <div></div>
+                                    <label><input id="tuesday2" name="tuesday" value="evening" type="checkbox"></label>
+                                </td>
+                                <td style="border: 1px solid #ddd; padding: 8px; text-align: center">
+                                    <label><input id="wednesday1" name="wednesday" value="morning" type="checkbox"></label>
+                                    <div></div>
+                                    <label><input id="wednesday2" name="wednesday" value="evening" type="checkbox"></label>
+                                </td>
+                                <td style="border: 1px solid #ddd; padding: 8px; text-align: center">
+                                    <label><input id="thursday1" name="thursday" value="morning" type="checkbox"></label>
+                                    <div></div>
+                                    <label><input id="thursday2" name="thursday" value="evening" type="checkbox"></label>
+                                </td>
+                                <td style="border: 1px solid #ddd; padding: 8px; text-align: center">
+                                    <label><input id="friday1" name="friday" value="morning" type="checkbox"></label>
+                                    <div></div>
+                                    <label><input id="friday2" name="friday" value="evening" type="checkbox"></label>
+                                </td>
+                                <td style="border: 1px solid #ddd; padding: 8px; text-align: center">
+                                    <label><input id="saturday1" name="saturday" value="morning" type="checkbox"></label>
+                                    <div></div>
+                                    <label><input id="saturday2" name="saturday" value="evening" type="checkbox"></label>
+                                </td>
+                                <td style="border: 1px solid #ddd; padding: 8px; text-align: center">
+                                    <span>8AM - 16PM</span>
+                                    <div></div>
+                                    <span>4PM - 12PM</span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="text-align: center">
+                        <button id="submitSchedule" style="padding: 5px;
+                                color: #efefef;
+                                font-weight: 600;
+                                width: 100%;
+                                border: 1px solid #ddd;
+                                border-radius: 5px;
+                                padding: 5px 10px;
+                                background-color: #28c528">
+                            Submit
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="registration-description">
+                    <div style="padding: 10px 0; display: flex; justify-content: center">
+                        <h5 class="week-range" id="weekRange" style="padding: 5px; border-radius: 5px; min-width: 230px; min-height: 34px; background-color: wheat">
+
+                        </h5>
+                    </div>
+
+                    <div class="registration-description-content">
+                        <ul>
+                            <input type="hidden" id="workManagementId">
+                            <li id="startDate"></li>
+                            <li id="endDate"></li>
+                            <li id="hourWage"></li>
+                            <li id="bonus"></li>
+                            <li id="deduction"></li>
+                            <li id="personLimit"></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script>
+    document.getElementById("submitSchedule").addEventListener("click", function() {
+        var checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+        var selectedDates = [];
+        var rows = document.querySelectorAll('tbody tr');
+        const weekRange = getCurrentWeek();
+
+        rows.forEach(function(row) {
+            var cells = row.getElementsByTagName('td');
+            var timeSlots = row.querySelectorAll('td:last-child span');
+            var daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+            for (var i = 0; i < cells.length - 1; i++) {
+                var checkboxesInCell = cells[i].querySelectorAll('input[type="checkbox"]');
+
+                checkboxesInCell.forEach(function(checkbox, index) {
+                    if (checkbox.checked) {
+                        selectedDates.push({
+                            date: getDateOfWeek(i + 1, weekRange.start),
+                            description: timeSlots[index].innerText,
+                            day: daysOfWeek[i],
+                            shift: checkbox.value
+                        });
+                    }
+                });
+            }
+        });
+        sendSchedule(selectedDates);
+        console.log(selectedDates);
+        // Ở đây, bạn có thể gửi dữ liệu selectedDates đi bằng AJAX hoặc xử lý theo nhu cầu của bạn
+
+    });
+    function sendSchedule(schedule) {
+        var scheduleData = {
+            scheduleRegistrationRequests: schedule.filter(item => typeof item === 'object'),
+            id: $('#workManagementId').val()
+        };
+        $.ajax({
+            url: '/api/schedule/registration',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(scheduleData),
+            success: function(data) {
+                console.log('Success:', data);
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+    function getDateOfWeek(dayOfWeek, startOfWeek) {
+        let date = new Date(startOfWeek);
+        date.setDate(startOfWeek.getDate() + (dayOfWeek - 1));
+        return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
+
+    function getCurrentWeek() {
+        const today = new Date();
+        const startOfWeek = new Date(today);
+        const day = startOfWeek.getDay(); // Lấy ngày trong tuần (0 = Chủ Nhật, 1 = Thứ 2, ...)
+        const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1); // Điều chỉnh để về đầu tuần (Thứ 2)
+        startOfWeek.setDate(diff);
+
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+        return {
+            start: startOfWeek,
+            end: endOfWeek
+        };
+    }
+
+    function formatDate(date) {
+        return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
+
+    function displayCurrentWeek() {
+        const weekRange = getCurrentWeek();
+        const weekRangeText = `${formatDate(weekRange.start)}-${formatDate(weekRange.end)}`;
+        document.getElementById('weekRange').textContent = weekRangeText;
+        $.ajax({
+            url: '/api/schedule/workmanagement',
+            type: 'GET',
+            contentType: 'application/json',
+            data: { stringDate: weekRangeText },
+            success: function(data) {
+                $('#startDate').text("Start date: " + formatDate(data['startDate']));
+                $('#endDate').text("End date: " + formatDate(data['endDate']));
+                $('#hourWage').text("Hour wage: " + data['hourWage']);
+                $('#personLimit').text("Person litmit: " + data['personLimit']);
+                $('#bonus').text("Bonus: " + data['percentageBonus']);
+                $('#deduction').text("Deduction: " + data['deductionPercentage']);
+                $('#workManagementId').val(data['id']);
+            },
+            error: function(error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
+    // Gọi hàm hiển thị tuần hiện tại khi trang tải
+    window.onload = displayCurrentWeek;
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+<script src="/js/scripts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+<script src="/assets/demo/chart-area-demo.js"></script>
+<script src="/assets/demo/chart-bar-demo.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+<script src="/js/datatables-simple-demo.js"></script>
+</body>
+</html>
+
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--    <head>-->
+<!--        <meta charset="utf-8" />-->
+<!--        <meta http-equiv="X-UA-Compatible" content="IE=edge" />-->
+<!--        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />-->
+<!--        <meta name="description" content="" />-->
+<!--        <meta name="author" content="" />-->
+<!--        <title>Home</title>-->
+<!--        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />-->
+<!--        <link href="/css/styles.css" rel="stylesheet" />-->
+<!--        <link href="/css/myStyles.css" rel="stylesheet"/>-->
+<!--        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>-->
+<!--        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>-->
+<!--    </head>-->
+<!--    <body class="sb-nav-fixed">-->
+<!--        <div th:replace="fragments/header :: html"></div>-->
+<!--        <div id="layoutSidenav">-->
+<!--            <div th:replace="fragments/sidebar :: html"></div>-->
+<!--            <div id="layoutSidenav_content">-->
+<!--                <main>-->
+<!--                    <div class="registration-container">-->
+<!--                        <div class="registration-table-container">-->
+<!--                            <h2 style="text-align: center; border-bottom: 2px solid #ddd; padding: 10px">Register your work schedule</h2>-->
+<!--                            <div style=" overflow-x: auto;">-->
+<!--                                <table style="border-collapse: collapse; width: 100%; margin: 40px 0; overflow: auto">-->
+<!--                                    <thead>-->
+<!--                                    <tr>-->
+<!--                                        <th style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: #fff">Monday</th>-->
+<!--                                        <th style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: #fff">Tuesday</th>-->
+<!--                                        <th style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: #fff">Wednesday</th>-->
+<!--                                        <th style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: #fff">Thursday</th>-->
+<!--                                        <th style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: #fff">Friday</th>-->
+<!--                                        <th style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: #fff">Saturday</th>-->
+<!--                                        <th style="border: 1px solid #ddd; padding: 8px; text-align: center; background-color: #fff">Shift</th>-->
+<!--                                    </tr>-->
+<!--                                    </thead>-->
+<!--                                    <tbody>-->
+<!--                                    <tr>-->
+<!--                                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center">-->
+<!--                                            <label><input id="monday1" type="checkbox"></label>-->
+<!--                                            <div></div>-->
+<!--                                            <label><input id="monday2" type="checkbox"></label>-->
+<!--                                        </td>-->
+<!--                                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center">-->
+<!--                                            <label><input id="tuesday1" type="checkbox"></label>-->
+<!--                                            <div></div>-->
+<!--                                            <label><input id="tuesday2" type="checkbox"></label>-->
+<!--                                        </td>-->
+<!--                                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center">-->
+<!--                                            <label><input id="wednesday1" type="checkbox"></label>-->
+<!--                                            <div></div>-->
+<!--                                            <label><input id="wednesday2" type="checkbox"></label>-->
+<!--                                        </td>-->
+<!--                                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center">-->
+<!--                                            <label><input id="thursday1" type="checkbox"></label>-->
+<!--                                            <div></div>-->
+<!--                                            <label><input id="thursday2" type="checkbox"></label>-->
+<!--                                        </td>-->
+<!--                                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center">-->
+<!--                                            <label><input id="friday1" type="checkbox"></label>-->
+<!--                                            <div></div>-->
+<!--                                            <label><input id="friday2" type="checkbox"></label>-->
+<!--                                        </td>-->
+<!--                                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center">-->
+<!--                                            <label><input id="saturday1" type="checkbox"></label>-->
+<!--                                            <div></div>-->
+<!--                                            <label><input id="saturday2" type="checkbox"></label>-->
+<!--                                        </td>-->
+<!--                                        <td style="border: 1px solid #ddd; padding: 8px; text-align: center">-->
+<!--                                            <span>8AM - 16AM</span>-->
+<!--                                            <div></div>-->
+<!--                                            <span>4PM - 12PM</span>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
+<!--                                    </tbody>-->
+<!--                                </table>-->
+<!--                            </div>-->
+
+<!--                            <div style="text-align: center">-->
+<!--                                <button id="submitSchedule" style="padding: 5px;-->
+<!--                                    color: #efefef;-->
+<!--                                    font-weight: 600;-->
+<!--                                    width: 100%;-->
+<!--                                    border: 1px solid #ddd;-->
+<!--                                    border-radius: 5px;-->
+<!--                                    padding: 5px 10px;-->
+<!--                                    background-color: #28c528">-->
+<!--                                    Submit-->
+<!--                                </button>-->
+<!--                            </div>-->
+
+<!--                        </div>-->
+
+<!--                        <div class="registration-description">-->
+<!--                            <div style="padding: 10px 0; display: flex; justify-content: center">-->
+<!--                                <h5 class="week-range" id="weekRange" style="padding: 5px; border-radius: 5px; min-width: 230px; min-height: 34px; background-color: wheat">-->
+
+<!--                                </h5>-->
+<!--                            </div>-->
+
+<!--                            <div class="registration-description-content">-->
+<!--                                <ul>-->
+<!--                                    <input type="hidden" id="workManagementId">-->
+<!--                                    <li id="startDate"></li>-->
+<!--                                    <li id="endDate"></li>-->
+<!--                                    <li id="hourWage"></li>-->
+<!--                                    <li id="bonus"></li>-->
+<!--                                    <li id="deduction"></li>-->
+<!--                                    <li id="personLimit"></li>-->
+<!--                                </ul>-->
+<!--                            </div>-->
+
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </main>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        <script>-->
+<!--            document.getElementById("submitSchedule").addEventListener("click", function() {-->
+<!--                var checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');-->
+<!--                var selectedDates = [];-->
+<!--                var rows = document.querySelectorAll('tbody tr');-->
+<!--                const weekRange = getCurrentWeek();-->
+
+<!--                rows.forEach(function(row) {-->
+<!--                    var cells = row.getElementsByTagName('td');-->
+<!--                    var timeSlots = row.querySelectorAll('td:last-child span');-->
+
+<!--                    for (var i = 0; i < cells.length - 1; i++) {-->
+<!--                        var checkboxesInCell = cells[i].querySelectorAll('input[type="checkbox"]');-->
+
+<!--                        checkboxesInCell.forEach(function(checkbox, index) {-->
+<!--                            if (checkbox.checked) {-->
+<!--                                selectedDates.push({-->
+<!--                                    date: getDateOfWeek(i + 1, weekRange.start),-->
+<!--                                    description: timeSlots[index].innerText-->
+<!--                                });-->
+<!--                            }-->
+<!--                        });-->
+<!--                    }-->
+<!--                });-->
+<!--                sendSchedule(selectedDates);-->
+<!--                console.log(selectedDates);-->
+<!--                // Ở đây, bạn có thể gửi dữ liệu selectedDates đi bằng AJAX hoặc xử lý theo nhu cầu của bạn-->
+
+<!--            });-->
+<!--            function sendSchedule(schedule) {-->
+<!--                var scheduleData = {-->
+<!--                    scheduleRegistrationRequests: schedule.filter(item => typeof item === 'object'),-->
+<!--                    id: $('#workManagementId').val()-->
+<!--                };-->
+<!--                $.ajax({-->
+<!--                    url: '/api/schedule/registration',-->
+<!--                    type: 'POST',-->
+<!--                    contentType: 'application/json',-->
+<!--                    data: JSON.stringify(scheduleData),-->
+<!--                    success: function(data) {-->
+<!--                        console.log('Success:', data);-->
+<!--                    },-->
+<!--                    error: function(error) {-->
+<!--                        console.error('Error:', error);-->
+<!--                    }-->
+<!--                });-->
+<!--            }-->
+<!--            function getDateOfWeek(dayOfWeek, startOfWeek) {-->
+<!--                let date = new Date(startOfWeek);-->
+<!--                date.setDate(startOfWeek.getDate() + (dayOfWeek - 1));-->
+<!--                return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });-->
+<!--            }-->
+
+<!--            function getCurrentWeek() {-->
+<!--                const today = new Date();-->
+<!--                const startOfWeek = new Date(today);-->
+<!--                const day = startOfWeek.getDay(); // Lấy ngày trong tuần (0 = Chủ Nhật, 1 = Thứ 2, ...)-->
+<!--                const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1); // Điều chỉnh để về đầu tuần (Thứ 2)-->
+<!--                startOfWeek.setDate(diff);-->
+
+<!--                const endOfWeek = new Date(startOfWeek);-->
+<!--                endOfWeek.setDate(startOfWeek.getDate() + 6);-->
+
+<!--                return {-->
+<!--                    start: startOfWeek,-->
+<!--                    end: endOfWeek-->
+<!--                };-->
+<!--            }-->
+
+<!--            function formatDate(date) {-->
+<!--                return date.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });-->
+<!--            }-->
+
+<!--            function displayCurrentWeek() {-->
+<!--                const weekRange = getCurrentWeek();-->
+<!--                const weekRangeText = `${formatDate(weekRange.start)}-${formatDate(weekRange.end)}`;-->
+<!--                document.getElementById('weekRange').textContent = weekRangeText;-->
+<!--                $.ajax({-->
+<!--                    url: '/api/schedule/workmanagement',-->
+<!--                    type: 'GET',-->
+<!--                    contentType: 'application/json',-->
+<!--                    data: { stringDate: weekRangeText },-->
+<!--                    success: function(data) {-->
+<!--                        $('#startDate').text("Start date: " + formatDate(data['startDate']));-->
+<!--                        $('#endDate').text("End date: " + formatDate(data['endDate']));-->
+<!--                        $('#hourWage').text("Hour wage: " + data['hourWage']);-->
+<!--                        $('#personLimit').text("Person litmit: " + data['personLimit']);-->
+<!--                        $('#bonus').text("Bonus: " + data['percentageBonus']);-->
+<!--                        $('#deduction').text("Deduction: " + data['deductionPercentage']);-->
+<!--                        $('#workManagementId').val(data['id']);-->
+<!--                    },-->
+<!--                    error: function(error) {-->
+<!--                        console.error('Error:', error);-->
+<!--                    }-->
+<!--                });-->
+<!--            }-->
+<!--            function formatDate(dateString) {-->
+<!--                const date = new Date(dateString);-->
+<!--                const day = String(date.getDate()).padStart(2, '0');-->
+<!--                const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0-->
+<!--                const year = date.getFullYear();-->
+<!--                return `${day}/${month}/${year}`;-->
+<!--            }-->
+
+<!--            // Gọi hàm hiển thị tuần hiện tại khi trang tải-->
+<!--            window.onload = displayCurrentWeek;-->
+<!--        </script>-->
+<!--        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>-->
+<!--        <script src="/js/scripts.js"></script>-->
+<!--        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>-->
+<!--        <script src="/assets/demo/chart-area-demo.js"></script>-->
+<!--        <script src="/assets/demo/chart-bar-demo.js"></script>-->
+<!--        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>-->
+<!--        <script src="/js/datatables-simple-demo.js"></script>-->
+<!--    </body>-->
+<!--</html>-->
